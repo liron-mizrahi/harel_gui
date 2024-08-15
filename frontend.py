@@ -1,41 +1,36 @@
 # frontnd.py
 from nicegui import Client, app, core, run, ui
 from nicegui import events
-from pythonosc.udp_client import SimpleUDPClient
+from osc_server import osc
 
 
 
 class webserver():
-    def __init__(self, msg_queue):
+    def __init__(self):
         # super().__init__()
-        self.msg_queue = msg_queue
-        self.osc_client = SimpleUDPClient('127.0.0.1', 1337)  # Create client 
-        
-        
 
-        
-        
         @ui.page('/', dark=True)
-        def page():
-            ui.label('Hi!')
+        def main_page():
+            with ui.column(): 
+                ui.button('Visual Stimulation', )
+                
+                with ui.row(): 
+                    ui.button('left')
+                    ui.button('right')  
+
+                
+                
+        # @ui.page('/visual', dark=True, )
+        # def visual_page(): 
+        #     ui.link('main',main_page)
+                
             
-            with ui.row(): 
-                ui.button('left', on_click=lambda: self.send_msg('left'))
-                ui.button('right', on_click=lambda: self.send_msg('right'))  
+            
                 
-                
-    def send_msg(self,msg):
-        self.osc_client.send_message("/webui", msg)   
-        print(msg)            
-
-  
-  
-     
-
 
 # if __name__ == '__main__': 
-# webserver()
-# ui.run()
+#     webserver()
+#     ui.run(dark=True,fullscreen=False)
 
 
 
