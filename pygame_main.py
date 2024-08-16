@@ -1,16 +1,42 @@
 import pygame
 import time
 from visual_effect import * 
+# from osc import osc
+from oscpy.server import OSCThreadServer
 
 class visual_stim(): 
     def __init__(self): 
         # Initialize Pygame
         pygame.init()
-        self.screen = pygame.display.set_mode((640, 480))
+        self.screen = pygame.display.set_mode((640, 480))#, pygame.FULLSCREEN)
         
         self.effect_functions = [draw_spiral, draw_prism, draw_smoke, draw_wave]
         self.current_effect = 0
+        self.osc_int(port=9002)
+        self.window_hide = False
      
+    def osc_int(self, port=9999):
+        self.osc = OSCThreadServer(encoding='utf8') 
+        self.osc.listen(address='0.0.0.0', port=port, default=True)
+        
+        @self.osc.address(b'/cmd')
+        def callback(*values):
+            print("got values: {}".format(values))
+            
+            if values[0] == 'effect':
+                print('set effect : '+ str(values[1]))
+                self.current_effect = values[1]
+                            
+            if values[0] == 'screen':
+                if values[1] == 0: 
+                    # self.screen = pygame.display.set_mode((1,1)) 
+                    self.running=False
+                if values[1] == 1: 
+                    # self.screen = pygame.display.set_mode((640, 480))    
+                    self.running=True             
+            
+    def osc_send(self, data:list=[]): 
+        self.osc.send_message(b'/cmd', data,ip_address='0.0.0.0', port=9000)
      
     
     
@@ -19,27 +45,24 @@ class visual_stim():
         
     def run(self): 
         # Main Pygame loop
-        running = True
+        self.running = True
         msg = ''
         start_time = pygame.time.get_ticks()
         color = pygame.Color(255, 255, 255)
         # Create a list of smoke particles
         particles = []
-        while running:
+        while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    self.running = False
                     
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_q:
-                         running = False
+                         self.running = False
                     if event.key == pygame.K_SPACE:
                         self.current_effect = (self.current_effect + 1) % len(self.effect_functions)
                         color = pygame.Color(np.random.randint(0, 255), np.random.randint(0, 255), np.random.randint(0, 255))
-            # read queue            
-            # while not self.msg_queue.empty(): 
-            #     msg = self.msg_queue.get()
-                # print('pygame: '+ msg)
+
             
                 
                 

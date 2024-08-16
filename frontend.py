@@ -1,22 +1,45 @@
 # frontnd.py
 from nicegui import Client, app, core, run, ui
 from nicegui import events
-from osc_server import osc
+# from osc import osc
+from oscpy.server import OSCThreadServer
 
 
+
+
+    
 
 class webserver():
     def __init__(self):
         # super().__init__()
+        # start manager osc server  
+        self.osc_int(port=9001)
+          
 
+    
         @ui.page('/', dark=True)
         def main_page():
             with ui.column(): 
-                ui.button('Visual Stimulation', )
+                ui.button('Visual Stimulation', on_click=lambda: self.osc_send(9002, [1, 2, 3, 4]) )
+                ui.select({0: 'spiral', 1: 'prism', 2: 'smoke', 3: 'wave'}, value=0,
+                          on_change=lambda x: self.osc_send(9002,['effect', x.value]))
                 
                 with ui.row(): 
                     ui.button('left')
                     ui.button('right')  
+                with ui.row():     
+                    ui.button('show',  on_click=lambda: self.osc_send(9002, ['screen', 1]) )  
+                    ui.button('hide',  on_click=lambda: self.osc_send(9002, ['screen', 0]) )
+                    
+    def osc_int(self, port=9999):
+        self.osc = OSCThreadServer(encoding='utf8') 
+        self.osc.listen(address='0.0.0.0', port=port, default=True)
+        
+        @self.osc.address(b'/cmd')
+        def callback(*values):
+            print("got values: {}".format(values))
+    def osc_send(self, port, data:list=[]): 
+        self.osc.send_message(b'/cmd', data,ip_address='0.0.0.0', port=port)
 
                 
                 
