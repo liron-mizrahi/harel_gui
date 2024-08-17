@@ -31,6 +31,15 @@ class webserver():
                     ui.button('show',  on_click=lambda: self.osc_send(9002, ['screen', 1]) )  
                     ui.button('hide',  on_click=lambda: self.osc_send(9002, ['screen', 0]) )
                     
+                knob = ui.knob(0.3, show_value=True)
+                switch = ui.switch('switch me')
+                ui.label('Switch!').bind_visibility_from(switch, 'value')
+                
+                slider = ui.slider(min=0, max=100, value=50)
+                ui.label().bind_text_from(slider, 'value')
+
+
+                    
     def osc_int(self, port=9999):
         self.osc = OSCThreadServer(encoding='utf8') 
         self.osc.listen(address='0.0.0.0', port=port, default=True)

@@ -2,7 +2,7 @@ import threading
 import time
 from nicegui import ui
 import pygame
-from pygame_main import visual_stim
+from pygame_mixer_main import visual_stim
 from frontend import webserver
 from oscpy.server import OSCThreadServer
 
@@ -25,5 +25,6 @@ frontend_thread = threading.Thread(target=run_nicegui )
 frontend_thread.daemon=True
 frontend_thread.start()
 
-visual = visual_stim()
+audio_file = "Bilateral Music Therapy.mp3"
+visual = visual_stim(audio_file)
 visual.run()
