@@ -23,6 +23,7 @@ class webserver():
             ui.separator()
             ui.button('Camera', on_click=lambda: ui.open('/camera'))
             ui.button('Music', on_click=lambda: ui.open('/music'))
+            switch = ui.switch('Camera', on_change=lambda x: self.osc_send(9003,['video_start']) if x.value == 1 else self.osc_send(9003,['video_stop']))
             ui.separator()
             ui.button('Quit', on_click=lambda _: self.osc_send(9000,['quit_app']))
             
@@ -54,6 +55,11 @@ class webserver():
             with ui.row():
                 ui.select({0: 'spiral', 1: 'prism', 2: 'smoke', 3: 'wave'}, value=0,
                           on_change=lambda x: self.osc_send(9002,['effect', x.value])).classes('w-64').style('font-size: 20px;')
+                
+                ui.select({0: 'music 1', 1: 'music 2', 2: 'music 3', 3: 'music 4'}, value=0,
+                          on_change=lambda x: self.osc_send(9002,['music', x.value])).classes('w-64').style('font-size: 20px;')
+ 
+ 
             with ui.row():
                 ui.button('Start',  on_click=lambda: self.osc_send(9000, ['screen_start']) )  
                 ui.button('Stop',  on_click=lambda: self.osc_send(9002, ['screen_stop']) )  

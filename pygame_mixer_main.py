@@ -6,7 +6,7 @@ class visual_stim():
     import visual_effect 
     from oscpy.server import OSCThreadServer
     import numpy as np 
-    def __init__(self, audio_file= None, pitches=None): 
+    def __init__(self, audio_file= None, pitches=None, webcam_queue=None): 
         # Initialize Pygame
         self.pygame.init()
         self.audio_file = audio_file
@@ -25,7 +25,8 @@ class visual_stim():
         self.current_effect = 0
         self.osc_int(port=9002)
         self.window_hide = False
-     
+        self.webcam_queue=webcam_queue
+        
     def osc_int(self, port=9999):
         self.osc = self.OSCThreadServer(encoding='utf8') 
         self.osc.listen(address='0.0.0.0', port=port, default=True)
@@ -41,8 +42,11 @@ class visual_stim():
             if values[0] == 'screen_stop':
                 self.running=False  
                 print('get : screen_stop')
-                print(self.running)   
-     
+                print(self.running)  
+                 
+        @self.osc.address(b'/webcam')
+        def callback(*values):
+            print(values[:5])
             
     def osc_send(self, data:list=[]): 
         self.osc.send_message(b'/cmd', data,ip_address='0.0.0.0', port=9000)
@@ -119,6 +123,13 @@ class visual_stim():
             txtsurf = font.render('msg_example', True, (0,255,255))
             self.screen.blit(txtsurf,(200,200))
    
+            
+            
+            
+            if not self.webcam_queue.empty():
+                frame_rgb = self.webcam_queue.get()
+                frame_surface = self.pygame.surfarray.make_surface(frame_rgb.swapaxes(0, 1))
+                self.screen.blit(frame_surface, (0, 0))
             
             
             self.pygame.display.flip()
