@@ -3,6 +3,7 @@ import time
 from nicegui import ui
 import pygame
 from pygame_mixer_main import visual_stim
+from pygame_avs2 import avs2
 from frontend import webserver
 from oscpy.server import OSCThreadServer
 import queue 
@@ -57,7 +58,10 @@ while True:
         audio_file = "Bilateral Music Therapy.mp3"
         visual = visual_stim(audio_file=audio_file, webcam_queue=webcam_queue)
         visual.run()   
-    
+ 
+    if msg == 'avs2_start': 
+        flicker = avs2()
+        flicker.run()
     
     if msg == 'quit_app': 
         raise OSError('timeout while waiting for success message.')

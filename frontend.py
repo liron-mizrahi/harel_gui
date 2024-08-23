@@ -20,6 +20,7 @@ class webserver():
             ui.button('Home', on_click=lambda: ui.open('/'))
             ui.button('Movies', on_click=lambda: ui.open('/movies'))
             ui.button('AVS', on_click=lambda: ui.open('/avs'))
+            ui.button('AVS2', on_click=lambda: ui.open('/avs2'))
             ui.separator()
             ui.button('Camera', on_click=lambda: ui.open('/camera'))
             ui.button('Music', on_click=lambda: ui.open('/music'))
@@ -83,9 +84,25 @@ class webserver():
         @ui.page('/music', dark=True)
         def music_page():
             self.menu()              
-                    
-        
-        
+ 
+        @ui.page('/avs2', dark=True) 
+        def moveis_page(): 
+            self.menu()   
+            with ui.row(): 
+                with ui.column(): 
+                    left_slider = ui.slider(min=20, max=2000, value=500, 
+                                            on_change=lambda x: self.osc_send(9004, ['frequency_left', x.value])).classes('w-64')
+                    ui.label().bind_text_from(left_slider, 'value')
+                with ui.column(): 
+                    right_slider = ui.slider(min=20, max=2000, value=505, 
+                                             on_change=lambda x: self.osc_send(9004, ['frequency_right', x.value])).classes('w-64')
+                    ui.label().bind_text_from(right_slider, 'value')                                              
+            with ui.row():
+                ui.button('Start', on_click=lambda _: self.osc_send(9000, ['avs2_start']) )  
+                ui.button('Stop',  on_click=lambda _: self.osc_send(9004, ['avs2_stop']) )    
+            ui.knob(1.0, min = 0.0, max = 50.,  show_value=True,  on_change=lambda x: self.osc_send(9004, ['amplitude', x.value]) )         
+            ui.switch('Flicker', value=True, on_change=lambda x: self.osc_send(9004,['flicker', x.value]))        
+
         @ui.page('/avs_', dark=True) 
         def moveis_page(): 
             self.menu()   
@@ -119,6 +136,8 @@ class webserver():
                     # coordinates = ui.label('0, 0',)
                     # coordinates2 = ui.label('0, 0', visible=False)
                     
+
+                                
     def osc_int(self, port=9999):
         self.osc = OSCThreadServer(encoding='utf8') 
         self.osc.listen(address='0.0.0.0', port=port, default=True)
