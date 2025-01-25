@@ -102,7 +102,11 @@ class webserver():
                 ui.button('Stop',  on_click=lambda _: self.osc_send(9004, ['avs2_stop']) )    
             ui.knob(1.0, min = 0.0, max = 50.,  show_value=True,  on_change=lambda x: self.osc_send(9004, ['amplitude', x.value]) )         
             ui.switch('Flicker', value=True, on_change=lambda x: self.osc_send(9004,['flicker', x.value]))        
+            
+            with ui.button(icon='colorize') as button:
+                ui.color_picker(on_pick=lambda e: button.style(f'background-color:{e.color}!important'))
 
+            
         @ui.page('/avs_', dark=True) 
         def moveis_page(): 
             self.menu()   
