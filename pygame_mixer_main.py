@@ -57,7 +57,6 @@ class visual_stim():
     def run(self): 
         # Main Pygame loop
         self.running = True
-        msg = ''
         start_time = self.pygame.time.get_ticks()
         color = self.pygame.Color(255, 255, 255)
         clock = self.pygame.time.Clock()

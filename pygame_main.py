@@ -40,8 +40,6 @@ class visual_stim():
      
     
     
-    
-    
         
     def run(self): 
         # Main Pygame loop
@@ -49,9 +47,11 @@ class visual_stim():
         msg = ''
         start_time = pygame.time.get_ticks()
         color = pygame.Color(255, 255, 255)
+        clock = pygame.time.Clock()
         # Create a list of smoke particles
         particles = []
         while self.running:
+            # keyboad control
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -72,7 +72,7 @@ class visual_stim():
             
             
             
-
+            # visual effects
             if self.effect_functions[self.current_effect] == draw_smoke: 
                 # Create new smoke particles
                 if len(particles) < 5000:
@@ -98,5 +98,6 @@ class visual_stim():
             pygame.display.flip()
 
             time.sleep(0.01)
+            # clock.tick(60)
         
         pygame.quit()

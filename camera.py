@@ -83,10 +83,14 @@ class video():
                 # Break the loop on 'q' key press
                 if self.cv2.waitKey(1) & 0xFF == ord('q'):
                         break
-                if not self.running:
-                    # Release everything when job is finished
-                    self.cap.release()
-                    self.out.release()
+            # TODO  : 
+            # if (not self.running) & (not self.cap.isOpened()): 
+            #     # Release everything when job is finished
+            #     try:
+            #         self.cap.release()
+            #         self.out.release()
+            #     except: 
+            #         pass
                     
         # self.cv2.destroyAllWindows()
 
